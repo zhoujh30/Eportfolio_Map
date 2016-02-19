@@ -1,0 +1,214 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Jianhao Zhou Eportfolio</title>
+  <meta name="description" content="eportfolio">
+  <meta name="author" content="Jianhao Zhou">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+  <style type="text/css">
+
+      #myMap {
+        width: 100%;
+        height: 500px;
+        background-color: gray;
+      }
+
+      .myButton {
+        width: 80px;
+        height: 25px;
+        margin-bottom: 50px;
+        font-size: 12px;
+        border-radius: 10px;
+        margin-right: 10px;
+      }
+	  
+	  .mapButton {
+        width: 100px;
+        height: 25px;
+        margin-bottom: 50px;
+        font-size: 12px;
+        border-radius: 10px;
+        margin-right: 10px;
+      }
+
+    </style>
+
+
+</head>
+
+<body>
+  <script src='data/BestForNYC.json'></script>
+  <script src="js/jquery.js"></script>
+  <script src="js/javascript.js"></script> 
+  <div id='myFirstDiv'>
+    <h5>Change Words Color Here:</h5>
+    <button id="makeBlack" class="myButton">
+      Make Black
+    </button>
+    <button id="makeBlue" class="myButton">
+      Make Blue
+    </button>
+    <button id="makeRed" class="myButton">
+      Make Red
+    </button>
+    <br/>
+
+    <h1>
+    Jianhao Zhou
+    </h1>
+
+    <div class='photo'></div>
+
+    <h3 class='notTestClass'>
+  Introduction
+    </h3>
+
+    <p>
+      I am Felix (Jianhao) Zhou, a Master of Urban Planning Candidate at NYU Wagner specializing in Environment, Infrastructure and Transportation. I am currently working as an Intern with the Planning, Development, and Transportation Division of New York City
+      Economic Development Corporation (NYCEDC). I helped create interactive Choropleth maps as visualizations of internal database, conduct studies of city-owned development sites, and prepare ULURP, RFPs, and environmental review documents. Additionally,
+      I am serving as a capstone project consultant for the Sustainability Initiatives Office of Metropolitan Transportation Authority (MTA) to build a full-scale mock-up of an avoided emissions commodity, and make analysis of what factors will allow for
+      a transit avoided carbon market to become vibrant.
+      <br/>
+      <br/> Interests include applied science that promote sustainable and smart cities, planning that improves infrastructure financing, and urban resilience that help city adapt and grow when faced with chronic stresses and acute shocks. Previously I served
+      as interns I hold two Bachelor of Arts degrees in sociology and English from Renmin University of China.
+    </p>
+
+    <h3 class='notTestClass'>
+  Skills
+    </h3>
+
+    <div>
+      <ul type="square">
+        <li>Photoshop</li>
+        <li>Illustrator</li>
+        <li>SketchUp</li>
+        <li>AutoCAD</li>
+        <li>ArcGIS</li>
+        <li>Python</li>
+        <li>SQL</li>
+        <li>Stata</li>
+      </ul>
+    </div>
+
+    <h3 class='notTestClass'>
+  Sample Work
+    </h3>
+    <img src='https://db.tt/xKORKbH3'>
+    <br/>
+    <p>Wage Gap Regression Model is a python assignment for the course Principles of Urban Informatics at NYU CUSP. Full version please click <a href='https://github.com/zhoujh30/PUI2015_jzhou/blob/master/ProjectSamples/ProjectSample_IncomeByGender.ipynb'
+      target="_blank">here</a>.</p>
+
+	<br/>
+	<br/>
+	<h3 class='notTestClass'>
+  Sample Project
+    </h3>
+	<p>The Best for NYC Challenge is a free, online tool to help you compare your business’s impact on NYC workers, communities, and the environment against 8,000+ businesses and provides free resources to improve. Here is a map of all participant companies.</p>
+	
+	<h5>Change Map Style Here:</h5>
+    <button id="one" class="mapButton">
+      Thunderforest
+    </button>
+    <button id="two" class="mapButton">
+      Pure Black
+    </button>
+    <button id="three" class="mapButton">
+      Watercolor
+    </button>
+    <br/>
+	
+	<div id="myMap"></div>
+	
+	<br/>
+    <h4> <span id='myNumber'>36</span> people thought this is helpful.</h4>
+    <button id="addOne">Click if you think it helpful</button>
+	   
+  </div>
+
+  
+
+  <script type="text/javascript">
+  
+   var layer2 = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+  });
+
+
+   //Stamen Watercolor Basemap
+   var layer3 = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+   subdomains: 'abcd',
+   minZoom: 1,
+   maxZoom: 16,
+   ext: 'png'
+ });
+
+   //Thunderforest_TransportDark
+	var layer1 = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+		maxZoom: 19
+	});
+
+
+  var eastRiver = [40.706913,-73.987513];
+  var upperWestSide = [40.788129,-73.974509];
+  var redhook = [40.729600, -73.958695];  
+  var myZoom = 11;
+
+  //now the fun stuff:  leaflet!
+  var map = L.map('myMap').setView(eastRiver, myZoom);
+
+  map.addLayer(layer1)
+  
+  L.geoJson(mapData, {
+//    style: function (feature) {
+//        return {color: feature.properties.color};
+//    },
+    onEachFeature: function (feature, layer) {
+        layer.bindPopup('<b>Company: </b>'+feature.properties.company+'</br><b>Industry: </b>'+feature.properties.industry+'</br><b>Address: </b>'+feature.properties.address);
+    }
+}).addTo(map);
+
+	  
+  var panOptions = {
+    animate: true,
+    duration: 2
+  }
+
+
+  $(".mapButton").click(function() {
+
+    if($(this).attr('id') == 'one' ) {
+	  map.removeLayer(layer2)
+	  map.removeLayer(layer3)
+	  map.addLayer(layer1)
+	  
+      map.panTo(eastRiver, panOptions);
+
+      } 
+	 else if($(this).attr('id') == 'two' ) {
+	  map.removeLayer(layer1)
+	  map.removeLayer(layer3)
+ 	  map.addLayer(layer2)
+      map.panTo(upperWestSide, panOptions);
+
+      }
+	 else if($(this).attr('id') == 'three' ) {
+	  map.removeLayer(layer1)
+	  map.removeLayer(layer2)
+ 	  map.addLayer(layer3)
+      map.panTo(redhook, panOptions);
+
+      }
+
+    });
+  </script>
+  
+
+</body>
+</html>
