@@ -43,11 +43,12 @@
 
 <body>
   <script src='data/BestForNYC.json'></script>
+  <script src="js/jquery.js"></script>
 
   <div id='myFirstDiv'>
     <h5>Change Words Color Here:</h5>
     <button id="makeBlack" class="myButton">
-      Make Black
+      Default 
     </button>
     <button id="makeBlue" class="myButton">
       Make Blue
@@ -111,7 +112,7 @@
 	
 	<h5>Change Map Style Here:</h5>
     <button id="one" class="mapButton">
-      Thunderforest
+      Default
     </button>
     <button id="two" class="mapButton">
       Pure Black
@@ -178,9 +179,36 @@
     animate: true,
     duration: 2
   }
+  
+  $(".mapButton").click(function() {
 
+  if($(this).attr('id') == 'one' ) {
+	  map.removeLayer(layer2)
+	  map.removeLayer(layer3)
+	  map.addLayer(layer1)
+	  
+      map.panTo(eastRiver, panOptions);
+
+      } 
+  else if($(this).attr('id') == 'two' ) {
+	  map.removeLayer(layer1)
+	  map.removeLayer(layer3)
+ 	  map.addLayer(layer2)
+      map.panTo(upperWestSide, panOptions);
+
+      }
+  else if($(this).attr('id') == 'three' ) {
+	  map.removeLayer(layer1)
+	  map.removeLayer(layer2)
+ 	  map.addLayer(layer3)
+      map.panTo(redhook, panOptions);
+
+      }
+
+});
+	  
   </script>
-  <script src="js/jquery.js"></script>
+ 
   <script src="js/javascript.js"></script> 
 
 </body>

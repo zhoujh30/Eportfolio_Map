@@ -23,29 +23,3 @@ $('#addOne').click(
   }
 )
 
-$(".mapButton").click(function() {
-
-    if($(this).attr('id') == 'one' ) {
-	  map.removeLayer(layer2)
-	  map.removeLayer(layer3)
-	  map.addLayer(layer1)
-	  
-      map.panTo(eastRiver, panOptions);
-
-      } 
-	 else if($(this).attr('id') == 'two' ) {
-	  map.removeLayer(layer1)
-	  map.removeLayer(layer3)
- 	  map.addLayer(layer2)
-      map.panTo(upperWestSide, panOptions);
-
-      }
-	 else if($(this).attr('id') == 'three' ) {
-	  map.removeLayer(layer1)
-	  map.removeLayer(layer2)
- 	  map.addLayer(layer3)
-      map.panTo(redhook, panOptions);
-
-      }
-
-    });
