@@ -28,7 +28,7 @@
       }
 	  
 	  .mapButton {
-        width: 80px;
+        width: 100px;
         height: 25px;
         margin-bottom: 50px;
         font-size: 12px;
@@ -115,7 +115,7 @@
       Default
     </button>
     <button id="two" class="mapButton">
-      Pure Black
+      Thunderforest
     </button>
     <button id="three" class="mapButton">
       Watercolor
@@ -123,7 +123,7 @@
     <br/>
 	
 	<div id="myMap"></div>
-	
+	<div id="info"></div>
 	<br/>
     <h4> <span id='myNumber'>36</span> people thought this is helpful.</h4>
     <button id="addOne">Click if you think it helpful</button>
@@ -134,9 +134,9 @@
 
   <script type="text/javascript">
   
-   var layer2 = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
+   var layer1 = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',{
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
-  });
+    });
 
 
    //Stamen Watercolor Basemap
@@ -146,67 +146,122 @@
    minZoom: 1,
    maxZoom: 16,
    ext: 'png'
- });
+    });
 
    //Thunderforest_TransportDark
-	var layer1 = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png', {
+	 var layer2 = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 		maxZoom: 19
-	});
+	 });
 
 
-  var eastRiver = [40.706913,-73.987513];
-  var upperWestSide = [40.788129,-73.974509];
-  var redhook = [40.729600, -73.958695];  
-  var myZoom = 11;
+    var eastRiver = [40.706913,-73.987513];
+    var upperWestSide = [40.788129,-73.974509];
+    var redhook = [40.729600, -73.958695];  
+    var myZoom = 11;
 
-  //now the fun stuff:  leaflet!
-  var map = L.map('myMap').setView(eastRiver, myZoom);
+    //now the fun stuff:  leaflet!
+    var map = L.map('myMap').setView(eastRiver, myZoom);
 
-  map.addLayer(layer1)
-  
-  L.geoJson(mapData, {
-//    style: function (feature) {
-//        return {color: feature.properties.color};
-//    },
-    onEachFeature: function (feature, layer) {
-        layer.bindPopup('<b>Company: </b>'+feature.properties.company+'</br><b>Industry: </b>'+feature.properties.industry+'</br><b>Address: </b>'+feature.properties.address);
+    map.addLayer(layer1)
+	  
+	  
+
+	  
+    var panOptions = {
+      animate: true,
+      duration: 2
     }
-}).addTo(map);
 
+	
+    function mouseoverFunction(e) {
+      var layer = e.target;
+
+      layer.setStyle({
+          weight: 5,
+          color: '#31a354',
+          dashArray: '',
+          fillOpacity: 0.3
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera) {
+          layer.bringToFront();
+      }
+
+    //update the text in the infowindow with whatever was in the data
+      // console.log(layer.feature.properties.name);
+      $('#info').text(e? layer.feature.properties.NTAName : '<h4>Hover over a Neighborhood</h4>');
+      }
+
+    //this runs on mouseout
+      function resetHighlight(e) {
+        geojson.resetStyle(e.target);
+      }
+
+      //this is executed once for each feature in the data, and adds listeners
+      function onEachFeatureNabe(feature, layer) {
+        layer.on({
+            mouseover: mouseoverFunction,
+            mouseout: resetHighlight,
+            click: zoomToFeature
+        });
+      }
+    	  
+      function zoomToFeature(e) {
+    		map.fitBounds(e.target.getBounds());
+    	}
+	 
+	  function styleNabe(feature) {
+		return {
+			fillColor: '#a1d99b',
+			weight: 2,
+			opacity: 1,
+			color: 'white',
+			dashArray: '3',
+			fillOpacity: 0.3
+		};
+	  }
+    	  
+      L.geoJson(mapData, {
+    //    style: function (feature) {
+    //        return {color: feature.properties.color};
+    //    },
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup('<b>Company: </b>'+feature.properties.company+'</br><b>Industry: </b>'+feature.properties.industry+'</br><b>Address: </b>'+feature.properties.address);
+        }
+      }).addTo(map);
 	  
-  var panOptions = {
-    animate: true,
-    duration: 2
-  }
+      $.getJSON('data/neighborhoods.geojson', function(nabe_data) {
+        geojson = L.geoJson(nabe_data, {
+		  style: styleNabe,
+    	  onEachFeature: onEachFeatureNabe
+    	}).addTo(map);
+      })
   
-  $(".mapButton").click(function() {
+      $(".mapButton").click(function() {
 
-  if($(this).attr('id') == 'one' ) {
-	  map.removeLayer(layer2)
-	  map.removeLayer(layer3)
-	  map.addLayer(layer1)
-	  
-      map.panTo(eastRiver, panOptions);
+        if($(this).attr('id') == 'one' ) {
+      	  map.removeLayer(layer2)
+      	  map.removeLayer(layer3)
+      	  map.addLayer(layer1)  
+            map.panTo(eastRiver, panOptions);
 
-      } 
-  else if($(this).attr('id') == 'two' ) {
-	  map.removeLayer(layer1)
-	  map.removeLayer(layer3)
- 	  map.addLayer(layer2)
-      map.panTo(upperWestSide, panOptions);
+            } 
+        else if($(this).attr('id') == 'two' ) {
+      	  map.removeLayer(layer1)
+      	  map.removeLayer(layer3)
+       	  map.addLayer(layer2)
+            map.panTo(upperWestSide, panOptions);
 
-      }
-  else if($(this).attr('id') == 'three' ) {
-	  map.removeLayer(layer1)
-	  map.removeLayer(layer2)
- 	  map.addLayer(layer3)
-      map.panTo(redhook, panOptions);
+            }
+        else if($(this).attr('id') == 'three' ) {
+      	  map.removeLayer(layer1)
+      	  map.removeLayer(layer2)
+       	  map.addLayer(layer3)
+            map.panTo(redhook, panOptions);
+            }
+      });
 
-      }
-
-});
-	  
   </script>
  
   <script src="js/javascript.js"></script> 

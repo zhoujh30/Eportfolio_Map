@@ -35,3 +35,14 @@ li a {
   background-size: 100%;
 }
 
+#info {
+  background: #FFFFFF;
+  padding: 10px;
+  border-radius: 10px;
+  font: bold, 10px;
+  position: relative;
+  top: -400px;
+  width: auto;
+  display: inline;
+  margin-left: 10px;
+	}
